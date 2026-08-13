@@ -45,7 +45,7 @@ public class AutoFirmaWebStart {
 	 * @param args Argumentos de la operaci&oacute;n.
 	 */
 	private static void openFile(final String[] args) {
-		new VisorFirma(true, null).initialize(false, new File(args[1]));
+		new VisorFirma(true, null).initialize(new File(args[1]));
 	}
 
 	/**
