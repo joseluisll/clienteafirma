@@ -16,11 +16,13 @@ import javax.swing.JFrame;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.aowagie.text.pdf.PdfReader;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.standalone.ui.pdf.PdfLoader.PdfLoaderListener;
+import es.gob.afirma.test.support.RequiresGui;
 
 /** Pruebas del Conversor de PDF a conjunto de im&aacute;genes.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -87,6 +89,7 @@ public final class Pdf2ImagesConverterTests {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
+	@Category(RequiresGui.class) // Crea un JFrame de progreso
 	public void testPdfLoadUi() throws Exception {
 
 		final byte[] testPdf = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(TEST_FILE));
