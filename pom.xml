@@ -57,7 +57,7 @@
 		<maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
 		<central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
 
-		<!-- test-dependencies -->		
+		<!-- test-dependencies -->
 		<junit.version>4.13.2</junit.version>
 	</properties>
 
@@ -142,6 +142,13 @@
 				<scope>test</scope>
 			</dependency>
 
+			<dependency>
+				<groupId>es.gob.afirma</groupId>
+				<artifactId>afirma-test-support</artifactId>
+				<version>${clienteafirma.version}</version>
+				<scope>test</scope>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 	
@@ -171,6 +178,7 @@
       		</activation>
 			
 			<modules>
+				<module>afirma-test-support</module>
 				<module>afirma-core</module>
 				<module>afirma-core-keystores</module>
 				<module>afirma-core-prefs</module>
@@ -272,6 +280,7 @@
 			
 			<modules>
 				<!-- Modulos core -->
+				<module>afirma-test-support</module>
 				<module>afirma-ui-simple-configurator-common</module>
 				<module>afirma-ui-core-jse</module>
 				<module>afirma-ui-core-jse-keystores</module>
@@ -315,6 +324,7 @@
 			<id>sonar</id>
 			
 			<modules>
+				<module>afirma-test-support</module>
 				<module>afirma-core</module>
 				<module>afirma-core-keystores</module>
 				<module>afirma-core-prefs</module>
@@ -392,6 +402,7 @@
 			<id>minhap</id>
 			
 			<modules>
+				<module>afirma-test-support</module>
 				<module>afirma-core</module>
 				<module>afirma-core-keystores</module>
 				<module>afirma-core-prefs</module>
@@ -475,6 +486,7 @@
 			</activation>
 			
 			<modules>
+				<module>afirma-test-support</module>
 				<module>afirma-core</module>
 				<module>afirma-core-keystores</module>
 				<module>afirma-core-prefs</module>
@@ -600,10 +612,10 @@
 						<publishingServerId>central</publishingServerId>
 					  </configuration>
 					</plugin>
-					
+
 				</plugins>
 			</build>
 		</profile>
 	</profiles>
-	
+
 </project>
