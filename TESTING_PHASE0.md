@@ -171,3 +171,112 @@ could have been noticed while the build stopped earlier.
   `--release`, so compiling on JDK 21 can still link against post-8 APIs and only fail at
   runtime. Phase 1's Temurin 8 job is the guard, and it is the first thing that should land
   next.
+
+---
+
+## Post-review fixes
+
+An independent review of this branch (`TESTING_PHASE0_REVIEW.md`, on
+`autofirma-testing-phase0-review`) reproduced every number reported above and confirmed them,
+with two corrections to the wording and three items to fix before merge.
+
+Two of the three are applied here. The third — normalising line endings — is **not** applied on
+this branch; see "Line endings: still open" below for what was measured and why it was pulled.
+
+### 1. One genuine coverage regression, fixed
+
+`TestKeyStoreWindowsCertACA` carried `@Category(RequiresWindows.class)` at **class** level, which
+also excluded `testPkcs12` — a test that loads a PKCS#12 keystore from the classpath, uses no
+Windows API, was never `@Ignore`d before this branch and passed on Linux. Categorising it lost
+real coverage.
+
+The category now sits on the two methods that genuinely need CAPI (`testStandaloneKeyChain`,
+`testMSCapi`); `testPkcs12` is back in the default lane. This is the reason both lane totals below
+are one higher than reported earlier.
+
+A method-level comparison of the surefire XML from both branches found this to be the **only**
+test that stopped running. In the other direction, 45 tests that had never executed on `master`
+now run and pass, so the executed-and-passing total went from 247 to 297 — the headline drop from
+340 to 298 counted tests that were selected and then skipped at runtime, which is not coverage.
+
+### 2. The OOXML headless defect is now documented
+
+The `HeadlessException` noted above is a production defect, not a test-environment constraint:
+`OOXMLOfficeObjectHelper.getOfficeObject(...)` writes the monitor count, screen resolution and
+colour depth into the `SignatureInfoV1` block of every OOXML signature, so signing throws on any
+machine with no display — including the command line (`CommandLineLauncher` accepts
+`-format ooxml`) and any server-side embedding.
+
+It is written up in **`docs/known-issues/ooxml-headless-signature.md`** with the file:line
+evidence, the call path, a reproduction, the captured stack trace and a suggested
+`GraphicsEnvironment.isHeadless()`-guarded fix with defaulted metadata. No production code was
+changed: Phase 0 does not touch `src/main`, and a change on the signing path needs its own review.
+No issue was opened — that has not been authorised.
+
+The four tests categorised `RequiresGui` for this reason now reference the document, so the
+category records *why* it exists and that it should be removed when the defect is fixed.
+
+### Line endings: still open
+
+This branch's raw diff against `master` is 9,251/8,514 lines across 106 files, but only 1,111/373
+of that is real change — 77 files were converted CRLF→LF as a side effect of being edited, and no
+`.gitattributes` exists to pin a convention. That leaves the tree mixed and makes each of those
+77 files a whole-file conflict against any other branch touching them.
+
+A whole-repository normalisation was prepared and then **deliberately pulled** before landing, so
+this branch still carries the mixed state. It was measured first, and the measurements are worth
+keeping for whoever picks this up:
+
+- Normalising every text file converts **1,794 files** CRLF→LF. Verified pure: every change was a
+  line-ending change only, with no content difference and no residual CR, and all **975 binary
+  fixture blobs were byte-identical** afterwards.
+- The cost is that it makes this branch's raw diff against `master` *larger*, not smaller —
+  ~335,000 lines across ~1,900 files — because `master` remains CRLF. The whitespace-ignoring
+  diff stays small (1,571/373), but the raw figure is what a reviewer meets first.
+- Two hazards surfaced that any future attempt must handle. `AfirmaHelp.helpindex` is an Apple
+  typedstream binary that Git's automatic text detection classifies as text, so `* text=auto`
+  would corrupt it; and `PreferencesPanelFacturaE.java:349` contains a stray lone CR before a
+  CRLF, which plain CRLF→LF conversion collapses into a single line ending, silently dropping a
+  blank line and leaving a residual CRLF that a later renormalisation would change again.
+- The safest design, if this is revisited: default to `* -text` and opt into conversion per
+  extension, rather than `* text=auto` with an exclusion list. The repository holds ~975 binary
+  fixtures and Git misclassifies several of them (PDFs and `.cer`/`.crt` certificates whose first
+  block contains no NUL byte). With that direction a forgotten text extension merely leaves a file
+  un-normalised, whereas a forgotten binary one corrupts it. Windows-toolchain sources
+  (`.cs`, `.xaml`, `.sln`, `.csproj`, …) should be pinned `eol=crlf` rather than converted, since
+  Visual Studio rewrites them back; `*.bat`/`*.cmd`/`*.nsi` stay CRLF and `*.sh`/`*.nsh` stay LF,
+  where the line ending is functional.
+
+A narrower option remains available and avoids the raw-diff cost: normalise only the 77 files this
+branch already converted, so the branch stops *adding* to the mixed state without repainting the
+repository.
+
+### Lane results after these fixes
+
+Both lanes re-run offline on the same container, JDK 21 / Maven 3.9.
+
+| Lane | Modules | Tests | Failures | Skipped | Result |
+|---|---:|---:|---:|---:|---|
+| `mvn clean test` | 33 | **299** | 0 | 6 | Build success |
+| `mvn clean test -P env-dev,autofirma` | 38 | **309** | 0 | 11 | Build success |
+
+Each is one test higher than before, and that one test is `testPkcs12`.
+
+### Still open after this round
+
+The review's remaining findings are deliberately **not** addressed here, since they are either
+Phase 1 work or need a decision that is not Phase 0's to make:
+
+- **Line endings.** The tree is still mixed and there is still no `.gitattributes`; see
+  "Line endings: still open" above for the measurements and the two hazards a future attempt
+  must handle.
+- The `integration-tests` profile empties the whole exclusion list at once, so it cannot run green
+  on any single machine. Per-category CI lanes are the fix, via
+  `-Dsurefire.excluded.groups=…` (a command-line `-D` overrides the POM property — verified).
+- The literal `<argLine>` in the root POM will silently disable JaCoCo in Phase 6 unless it becomes
+  `@{argLine} …`.
+- `afirma-test-support` has no `maven.deploy.skip`, so `env-deploy` would publish it.
+- The eleven surviving `@Ignore`s still have written reasons rather than tracked issues.
+- `afirma-server-triphase-signer` (`<java.version>1.7</java.version>`) and the `minhap` profile
+  (`-Xbootclasspath` to `rt.jar`) cannot build on a modern JDK. Both predate this branch and are
+  out of the plan's scope, but they break `env-install`, `sonar` and `minhap` on JDK 21.
