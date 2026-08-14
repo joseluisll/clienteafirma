@@ -226,7 +226,10 @@ public class MassiveSignatureTest {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Category(RequiresGui.class) // La firma OOXML consulta el numero de monitores y la resolucion de pantalla (java.awt)
+	// Defecto conocido: la firma OOXML consulta el numero de monitores y la resolucion de
+	// pantalla, y falla con HeadlessException. Ver
+	// docs/known-issues/ooxml-headless-signature.md (quitar esta categoria al corregirlo).
+	@Category(RequiresGui.class)
 	public void pruebaCombinacionesDeFirmaProgramaticaOOXML() throws Exception {
 		MassiveSignatureTest.pruebaCombinacionesDeFirmaProgramatica(MassiveSignatureTest.getFormats(true));
 	}

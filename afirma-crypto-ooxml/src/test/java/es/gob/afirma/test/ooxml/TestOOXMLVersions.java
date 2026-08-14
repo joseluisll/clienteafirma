@@ -83,7 +83,9 @@ public final class TestOOXMLVersions {
      * @throws Exception en cualquier error */
     @SuppressWarnings("static-method")
 	@Test
-	@Category(RequiresGui.class) // La firma OOXML consulta la resolucion de pantalla (java.awt.Toolkit)
+	// Defecto conocido: la firma OOXML consulta la pantalla y falla con HeadlessException.
+	// Ver docs/known-issues/ooxml-headless-signature.md (quitar esta categoria al corregirlo).
+	@Category(RequiresGui.class)
     public void testSignature() throws Exception {
 
         Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
