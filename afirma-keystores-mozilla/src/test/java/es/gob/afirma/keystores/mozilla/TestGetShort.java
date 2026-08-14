@@ -4,9 +4,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.misc.LoggerUtil;
 import es.gob.afirma.core.misc.Platform;
+import es.gob.afirma.test.support.RequiresWindows;
 
 /** Prueba de obtenci&oacute;n de nombre corto en Windows.
  * @author Tom&aacute;s Garc&iacute;-Mer&aacute;s Capote. */
@@ -27,11 +32,6 @@ public final class TestGetShort {
 			return originalPath;
 		}
 		final String[] command = new String[] { "cmd.exe", "/c", "for %f in (\"" + originalPath + "\") do @echo %~sf" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		System.out.print("Se ejecutara: "); //$NON-NLS-1$
-		for (final String s : command) {
-			System.out.print(s + " "); //$NON-NLS-1$
-		}
-		System.out.println();
 		try {
 			final Process p = new ProcessBuilder(
 				command
@@ -48,12 +48,25 @@ public final class TestGetShort {
 		return originalPath;
 	}
 
-	/** Main para pruebas.
-	 * @param args No se usa. */
-	public static void main(final String[] args) {
-		final String path = "c:\\Program Files (x86)\\Microsoft Silverlight\\5.1.41212.0\\agcore.debug.dll"; //$NON-NLS-1$
-		System.out.println("Nombre largo: " + path); //$NON-NLS-1$
-		System.out.println("Nombre corto: " + getShort(path)); //$NON-NLS-1$
+	/** Comprueba que se obtiene un nombre corto para el directorio temporal de Windows. */
+	@SuppressWarnings("static-method")
+	@Test
+	@Category(RequiresWindows.class)
+	public void testGetShortNameOfExistingDirectory() {
+		final String path = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
+		final String shortName = getShort(path);
+		Assert.assertNotNull("El nombre corto no puede ser nulo", shortName); //$NON-NLS-1$
+		Assert.assertFalse("El nombre corto no puede estar vacio", shortName.trim().isEmpty()); //$NON-NLS-1$
+		LOGGER.info("Nombre largo: " + path + " / Nombre corto: " + shortName); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	/** Una ruta inexistente se devuelve sin cambios. */
+	@SuppressWarnings("static-method")
+	@Test
+	@Category(RequiresWindows.class)
+	public void testGetShortNameOfMissingPathIsUnchanged() {
+		final String path = "C:\\does-not-exist-" + System.nanoTime(); //$NON-NLS-1$
+		Assert.assertEquals(path, getShort(path));
 	}
 
 }
