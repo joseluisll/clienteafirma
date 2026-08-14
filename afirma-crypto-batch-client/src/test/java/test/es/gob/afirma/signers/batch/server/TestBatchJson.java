@@ -69,7 +69,6 @@ public class TestBatchJson {
 		final String batchPostSignerUrl = BASE_URL + "postsign"; //$NON-NLS-1$
 
 
-		//final byte[] dataRef = readFile(new File("C:\\Users\\carlos.gamuci\\Desktop\\Entrada\\cofirma.csig"));
 		final String cosignRefB64 = Base64.encode("cofirma.csig".getBytes()); //$NON-NLS-1$
 //		final String signRefB64 = Base64.encode("firma.csig".getBytes()); //$NON-NLS-1$
 //		final String docxRefB64 = Base64.encode("Entrada.docx".getBytes()); //$NON-NLS-1$

@@ -73,11 +73,13 @@ public final class MiniTestDNI {
 		);
 
         Assert.assertNotNull(firma);
+        final java.io.File outFile = java.io.File.createTempFile("MiniTestCadesNuevo-", ".csig"); //$NON-NLS-1$ //$NON-NLS-2$
         try (
-    		final java.io.FileOutputStream fos = new java.io.FileOutputStream("C:/pruebas/salida/MiniTestCadesNuevo.csig"); //$NON-NLS-1$
+    		final java.io.FileOutputStream fos = new java.io.FileOutputStream(outFile);
 		) {
             fos.write(firma);
         }
+        System.out.println("Firma guardada en: " + outFile.getAbsolutePath()); //$NON-NLS-1$
 
     }
 

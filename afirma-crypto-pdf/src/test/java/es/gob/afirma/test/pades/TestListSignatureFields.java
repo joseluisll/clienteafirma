@@ -1,7 +1,6 @@
 package es.gob.afirma.test.pades;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -53,7 +52,7 @@ public final class TestListSignatureFields {
 	@Ignore // El PDF de prueba con campos de firma no esta en el repositorio
 	public void testAnalizeSignatureFields() throws Exception {
 		PdfReader reader;
-		try (InputStream fis = new FileInputStream("C:\\Users\\carlos.gamuci\\Desktop\\test\\descargar_signed_campo.pdf")) { //$NON-NLS-1$
+		try (InputStream fis = TestListSignatureFields.class.getResourceAsStream("/descargar_signed_campo.pdf")) { //$NON-NLS-1$
 			reader = new PdfReader(fis);
 		}
 

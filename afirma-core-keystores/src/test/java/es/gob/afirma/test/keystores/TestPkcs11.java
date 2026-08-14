@@ -27,7 +27,6 @@ public final class TestPkcs11 {
 
 	//private static final String LIB_NAME = "C:\\WINDOWS\\System32\\DNIe_P11_priv.dll"; //$NON-NLS-1$
 	//private static final String LIB_NAME = "C:\\WINDOWS\\SysWOW64\\siecap11.dll"; //$NON-NLS-1$
-	//private static final String LIB_NAME = "C:\\Users\\tomas\\workspace_32\\afirma-core-keystores\\src\\test\\resources\\CardOS\\cardos11.dll"; //$NON-NLS-1$
 	//private static final String LIB_NAME = "C:\\WINDOWS\\SysWOW64\\cardos11.dll"; //$NON-NLS-1$
 	//private static final String LIB_NAME = "C:\\WINDOWS\\SysWOW64\\TIF_P11.dll"; //$NON-NLS-1$
 	private static final String LIB_NAME = "C:\\WINDOWS\\SysWOW64\\DNIe_P11_priv.dll"; //$NON-NLS-1$

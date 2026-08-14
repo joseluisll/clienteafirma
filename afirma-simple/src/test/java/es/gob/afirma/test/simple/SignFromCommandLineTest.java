@@ -1,6 +1,9 @@
 package es.gob.afirma.test.simple;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+
+import javax.imageio.ImageIO;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,7 +27,7 @@ public final class SignFromCommandLineTest {
 	public void testSignPadesVisible() throws Exception {
 
 		final String inputFile = new File(SignFromCommandLineTest.class.getResource(PDF_FILE).toURI()).getAbsolutePath();
-		final String outFile = new File("C:\\Users\\carlos.gamuci\\Desktop\\pdf_visible.pdf").getAbsolutePath(); //$NON-NLS-1$
+		final String outFile = File.createTempFile("pdf_visible-", ".pdf").getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
 
 		final String p12File = new File(SignFromCommandLineTest.class.getResource(PKCS12_FILE).toURI()).getAbsolutePath();
 
@@ -56,9 +59,12 @@ public final class SignFromCommandLineTest {
 	public void testSignPadesVisibleWithRubric() throws Exception {
 
 		final String inputFile = new File(SignFromCommandLineTest.class.getResource(PDF_FILE).toURI()).getAbsolutePath();
-		final String outFile = new File("C:\\Users\\carlos.gamuci\\Desktop\\pdf_visible.pdf").getAbsolutePath(); //$NON-NLS-1$
+		final String outFile = File.createTempFile("pdf_visible-", ".pdf").getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
 
 		final String p12File = new File(SignFromCommandLineTest.class.getResource(PKCS12_FILE).toURI()).getAbsolutePath();
+
+		final File rubricFile = File.createTempFile("Rubrica-", ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+		ImageIO.write(new BufferedImage(50, 20, BufferedImage.TYPE_INT_RGB), "png", rubricFile); //$NON-NLS-1$
 
 		SimpleAfirma.main(
 				new String[] {
@@ -73,7 +79,7 @@ public final class SignFromCommandLineTest {
 							"signaturePositionOnPageLowerLeftY=100\\n" + //$NON-NLS-1$
 							"signaturePositionOnPageUpperRightX=200\\n" + //$NON-NLS-1$
 							"signaturePositionOnPageUpperRightY=200\\n" + //$NON-NLS-1$
-							"signatureRubricImage=C:/Users/carlos.gamuci/Desktop/Entrada/Rubrica.png\\n" + //$NON-NLS-1$
+							"signatureRubricImage=" + rubricFile.getAbsolutePath().replace('\\', '/') + "\\n" + //$NON-NLS-1$ //$NON-NLS-2$
 							"signaturePage=1" //$NON-NLS-1$
 				}
 
@@ -89,7 +95,7 @@ public final class SignFromCommandLineTest {
 	public void testSignPadesVisibleMultiplePages() throws Exception {
 
 		final String inputFile = new File(SignFromCommandLineTest.class.getResource(PDF_MULTIPLE_PAGES_FILE).toURI()).getAbsolutePath();
-		final String outFile = new File("C:\\testFirma\\pdf_visible.pdf").getAbsolutePath(); //$NON-NLS-1$
+		final String outFile = File.createTempFile("pdf_visible-", ".pdf").getAbsolutePath(); //$NON-NLS-1$ //$NON-NLS-2$
 
 		final String p12File = new File(SignFromCommandLineTest.class.getResource(PKCS12_FILE).toURI()).getAbsolutePath();
 

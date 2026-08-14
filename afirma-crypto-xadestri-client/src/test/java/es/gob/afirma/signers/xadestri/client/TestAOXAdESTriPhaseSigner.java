@@ -10,7 +10,6 @@
 package es.gob.afirma.signers.xadestri.client;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -970,10 +969,7 @@ public class TestAOXAdESTriPhaseSigner {
 
 		System.out.println("Java version: " + System.getProperty("java.version"));
 
-		byte[] data;
-		try (InputStream fis = new FileInputStream("C:\\Entrada\\autofirma_config.afconfig")) {
-			data = AOUtil.getDataFromInputStream(fis);
-		}
+		final byte[] data = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(DATA_FILENAME));
 
 		final KeyStore ks = KeyStore.getInstance("PKCS12"); //$NON-NLS-1$
 		ks.load(ClassLoader.getSystemResourceAsStream(CERT_PATH_EC), CERT_PASS_EC.toCharArray());
