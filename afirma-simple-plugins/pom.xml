@@ -29,6 +29,19 @@
 			<version>${clienteafirma.version}</version>
 		</dependency>
 
+		<!-- El modulo tiene un directorio src/test (solo con recursos, sin pruebas
+		     todavia), asi que Surefire se ejecuta sobre el y necesita un proveedor
+		     JUnit 4.8+ en el classpath de pruebas para poder aplicar excludedGroups. -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>afirma-test-support</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
