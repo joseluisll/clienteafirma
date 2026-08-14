@@ -6,14 +6,18 @@ import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.core.signers.AOSignerFactory;
+import es.gob.afirma.test.support.RequiresGui;
 
 /**
  * Clase para probar todas funciones de firma y multifirma disponibles para
@@ -127,13 +131,26 @@ public class MassiveSignatureTest {
 		}
 	}
 
+	/** Devuelve las filas de {@link #FORMATS} correspondientes a OOXML o al resto de formatos.
+	 * @param ooxml <code>true</code> para obtener unicamente el formato OOXML,
+	 *              <code>false</code> para obtener todos los dem&aacute;s.
+	 * @return Formatos seleccionados. */
+	private static List<String[]> getFormats(final boolean ooxml) {
+		final List<String[]> formats = new ArrayList<>();
+		for (final String[] format : MassiveSignatureTest.FORMATS) {
+			if (AOSignConstants.SIGN_FORMAT_OOXML.equals(format[0]) == ooxml) {
+				formats.add(format);
+			}
+		}
+		return formats;
+	}
+
 	/**
-	 * Genera todo tipo de firmas y multifirmas masivas.
+	 * Genera todo tipo de firmas y multifirmas masivas para los formatos indicados.
+	 * @param formats Formatos de firma a probar.
 	 * @throws Exception Cuando se produce cualquier error durante la ejecuci&oacute;n.
 	 */
-	@SuppressWarnings("static-method")
-	@Test
-	public void pruebaTodasLasCombinacionesDeFirmaProgramatica() throws Exception {
+	private static void pruebaCombinacionesDeFirmaProgramatica(final List<String[]> formats) throws Exception {
 
 		final KeyStore ks = KeyStore.getInstance("PKCS12"); //$NON-NLS-1$
 		try (
@@ -151,7 +168,7 @@ public class MassiveSignatureTest {
 						.toCharArray()));
 
 		final MassiveSignConfiguration config = new MassiveSignConfiguration(pke);
-		for (final String[] format : MassiveSignatureTest.FORMATS) {
+		for (final String[] format : formats) {
 			config.setDefaultFormat(format[0]);
 			// for (final boolean originalFormat : ORIGINAL_FORMAT) {
 			// config.setOriginalFormat(originalFormat);
@@ -191,6 +208,27 @@ public class MassiveSignatureTest {
 			}
 			// }
 		}
+	}
+
+	/**
+	 * Genera todo tipo de firmas y multifirmas masivas, salvo las de OOXML.
+	 * @throws Exception Cuando se produce cualquier error durante la ejecuci&oacute;n.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	public void pruebaTodasLasCombinacionesDeFirmaProgramatica() throws Exception {
+		MassiveSignatureTest.pruebaCombinacionesDeFirmaProgramatica(MassiveSignatureTest.getFormats(false));
+	}
+
+	/**
+	 * Genera las firmas y multifirmas masivas de OOXML.
+	 * @throws Exception Cuando se produce cualquier error durante la ejecuci&oacute;n.
+	 */
+	@SuppressWarnings("static-method")
+	@Test
+	@Category(RequiresGui.class) // La firma OOXML consulta el numero de monitores y la resolucion de pantalla (java.awt)
+	public void pruebaCombinacionesDeFirmaProgramaticaOOXML() throws Exception {
+		MassiveSignatureTest.pruebaCombinacionesDeFirmaProgramatica(MassiveSignatureTest.getFormats(true));
 	}
 
 	/**
