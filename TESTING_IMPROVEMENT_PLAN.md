@@ -27,7 +27,8 @@ default reactor on JDK 21 / Maven 3.9.
 | **`maven-surefire-plugin` is completely unconfigured** — no version pin, no excludes, no skip flags anywhere. Behaviour depends on the Maven default (3.2.5 with Maven 3.9.x). | 0 hits for `surefire` in any `pom.xml` |
 | **JUnit 4.13.2 is the only test library.** No Mockito/EasyMock, no Hamcrest imports, no AssertJ, no JUnit 5 anywhere. | root `pom.xml:61`, repo-wide grep |
 | **JUnit reaches most crypto modules only transitively through `spongycastle:prov`** (its compile-scope `junit` dep, remapped to `test` by root `dependencyManagement`). `afirma-crypto-cades`, `-cades-multi`, `-xades`, `-pdf`, `-core-pkcs7`, `-validation`, `afirma-keystores-filters` and `afirma-ui-simple-configurator` declare no `junit` dependency of their own. | `mvn dependency:tree -pl afirma-crypto-cades` → `spongycastle:prov → junit:4.13.2:test` |
-| **`mvn test` never touches the application itself.** `afirma-simple` and the UI modules are only in the `autofirma`/`env-install` profiles, so the default build tests the crypto libraries but not AutoFirma. | root `pom.xml`, profiles `env-dev` vs `autofirma` |
+| **`mvn test` never touches the application itself.** `afirma-simple` and the UI modules are only in the `autofirma`/`env-install` profiles, so the default build tests the crypto libraries but not AutoFirma. Combining profiles works and yields the full 37-module reactor: `mvn -P env-dev,autofirma ...` (verified). Note that `-P autofirma` **alone** silently drops the core modules from the reactor and resolves them from Maven Central — i.e. it would test stale artifacts, not the working tree. | root `pom.xml` profiles; verified with `mvn -B -P env-dev,autofirma validate` |
+| The build uses `source`/`target` 1.8, **not** `--release 8`, so compiling on a newer JDK can silently link against post-Java-8 APIs and only fail at runtime on 8. | root `pom.xml` compiler config |
 | The `sonar` profile exists but has no coverage engine (no JaCoCo) wired to it. | root `pom.xml:315` |
 
 ### 1.2 Test suite health (19 desktop-relevant modules)
@@ -98,18 +99,18 @@ default reactor on JDK 21 / Maven 3.9.
 
 ### Phase 0 — Stabilise the harness (prerequisite for everything else)
 
-*Goal: a reproducible, green `mvn test` for the default reactor **and** the `autofirma` profile.*
-
 1. **Pin and configure Surefire** in root `pluginManagement`: explicit version, `-Djava.awt.headless=true`,
    UTF-8, `trimStackTrace=false`, and `rerunFailingTestsCount=1` (temporary, until flakes are gone).
 2. **Declare `junit:junit` (test scope) explicitly in every module that has tests.** Today it
    arrives by accident through SpongyCastle; any dependency upgrade would silently break
    test compilation of 8 modules.
-3. **Introduce test lanes with JUnit 4 `@Category`:** create marker interfaces in a new
-   shared test module (see Phase 2): `RequiresNetwork`, `RequiresSmartCard`, `RequiresGui`,
-   `RequiresWindows` / `RequiresMacOS` / `RequiresNss`, `RequiresTriphaseServer`.
-   Surefire default run excludes all of them; a `verify`-bound failsafe/surefire execution or
-   a `-Pintegration-tests` profile includes the ones the environment supports.
+3. **Bootstrap a skeleton `afirma-test-support` module now** (it grows in Phase 2) holding
+   only the JUnit 4 `@Category` marker interfaces: `RequiresNetwork`, `RequiresSmartCard`,
+   `RequiresGui`, `RequiresWindows` / `RequiresMacOS` / `RequiresNss`,
+   `RequiresTriphaseServer`. Surefire's default run excludes all of them via
+   `<excludedGroups>`; a `-Pintegration-tests` profile includes the ones the environment
+   supports. (Categories must live in a shared module on every test classpath — that is why
+   the skeleton cannot wait for Phase 2.)
 4. **Reclassify instead of `@Ignore`:** sweep the 76 `@Ignore`d methods and the 2 currently
    red tests into the categories above. The comment (`// Necesita un DNIe`) becomes the
    category. `@Ignore` remains only for genuinely broken/obsolete tests, each with a tracking issue.
@@ -121,18 +122,22 @@ default reactor on JDK 21 / Maven 3.9.
 7. **Remove hardcoded `C:\Users\...` paths** — load fixtures from `src/test/resources` via
    classpath, temp dirs via `TemporaryFolder`/`java.nio.file.Files.createTempDirectory`.
 
-**Acceptance:** `mvn clean test` and `mvn clean test -P autofirma` both green on a
+**Acceptance:** `mvn clean test` and `mvn clean test -P env-dev,autofirma` both green on a
 network-less Linux container; skip count in unit lane ≈ 0; every excluded test carries a category.
 
 ### Phase 1 — Continuous integration (GitHub Actions)
 
-*Goal: every PR gets an automatic verdict.*
-
 1. **Workflow `build.yml`:**
-   * Job 1 (Linux, Temurin **8**): `mvn -B clean test` — guards the Java 8 source/target contract.
+   * Job 1 (Linux, Temurin **8**): `mvn -B clean test` — guards the Java 8 source/target
+     contract *and* catches post-Java-8 API leakage that `source`/`target` (without
+     `--release`) lets through on newer JDKs.
    * Job 2 (Linux, Temurin 11 and 17 matrix): same, catches the JDK-compat issues this
      codebase historically hits (e.g. the existing `TestJavaBug8182580`).
-   * Job 3 (Linux): `mvn -B clean verify -P autofirma` — builds and tests the actual app modules.
+   * Job 3 (Linux, Temurin 8): `mvn -B clean verify -P env-dev,autofirma` — builds and tests
+     the actual app modules **together with** the core modules. (Never `-P autofirma` alone:
+     that drops the core modules from the reactor and resolves them from Maven Central,
+     i.e. it would test stale artifacts instead of the PR's code. Verified: the combined
+     invocation yields the full 37-module reactor.)
    * Cache `~/.m2/repository`; always upload `**/target/surefire-reports` as artifacts.
 2. **Integration lane (nightly or label-triggered):** runs `RequiresNetwork` +
    `RequiresTriphaseServer` categories, with the tri-phase server stub from Phase 4; add
@@ -148,11 +153,8 @@ integration lane reports separately from the unit lane.
 
 ### Phase 2 — Shared test fixtures module
 
-*Goal: one source of truth for keystores, sample documents, and test doubles.*
-
-1. **New module `afirma-test-support`** (built first in the reactor, never deployed;
-   consumed as a normal `test`-scope dependency):
-   * The `@Category` marker interfaces (Phase 0).
+1. **Grow `afirma-test-support`** (bootstrapped in Phase 0; built first in the reactor,
+   never deployed; consumed as a normal `test`-scope dependency):
    * **One canonical copy of each test keystore** and loader helpers
      (`TestKeyStores.getRsaP12()`, `.getEcdsaP12()`, `.getExpiredP12()`, …), replacing the
      13 scattered copies of `ANF_PF_Activo.pfx` and friends.
@@ -178,7 +180,7 @@ touching real OS preference stores; a documented fixture-regeneration path exist
 
 ### Phase 3 — Unit tests for high-value untested logic
 
-*Goal: cover the pure-logic core of the desktop app, ordered by risk × cheapness.*
+Ordered by risk × cheapness:
 
 | Priority | Target | Why |
 |---|---|---|
@@ -195,12 +197,11 @@ parser reaches ≥80% line coverage; all new tests live in the unit lane (no cat
 
 ### Phase 4 — De-flake and resurrect the disabled suites
 
-*Goal: turn the ~44 skipped tri-phase/batch client tests and the TSA-dependent tests back on.*
-
 1. **Tri-phase clients (`cadestri`/`xadestri`/`padestri`/`batch-client`):** point the
    existing tests at the Phase 2 local HTTP stub serving recorded pre-sign/post-sign
-   responses. The protocol is plain HTTP + Base64/JSON/XML — no real server logic needed to
-   test the client side. This alone converts 29+8+8+2 skipped tests into running ones.
+   responses (the hardcoded `appprueba`/`localhost:8080` URLs become injectable test
+   parameters). The protocol is plain HTTP + Base64/JSON/XML — no real server logic needed
+   to test the client side. This alone converts 29+8+8+2 skipped tests into running ones.
 2. **Timestamping tests (`psis.catcert.net` TSA):** stand up a minimal local RFC 3161
    responder with SpongyCastle in test-support, or record one response per digest algorithm;
    keep one live-TSA smoke test in the `RequiresNetwork` nightly lane.
@@ -218,8 +219,6 @@ in the default lane opens a network connection (verifiable by running offline).
 
 ### Phase 5 — Integration tests for the invocation surface (headless E2E)
 
-*Goal: test AutoFirma the way browsers and the AGE integration kit actually drive it.*
-
 1. **Headless protocol-to-signature tests:** with `FakeAOUIManager` + a P12 fixture
    (forced via the `keystore` extra param), drive `ProtocolInvocationLauncher.launch(...)`
    for `sign`/`cosign`/`countersign`/`save` URIs and assert on the produced signature bytes.
@@ -234,9 +233,10 @@ in the default lane opens a network connection (verifiable by running offline).
    (sign → verify with the existing validation module) — this is the cheapest true
    end-to-end lane because it is genuinely headless already.
 4. **Optional GUI smoke lane (last):** AssertJ-Swing 3.x under `xvfb-run` in the nightly
-   lane: launch `SimpleAfirma`, load a PDF, sign with the P12 fixture via `FakeAOUIManager`-free
-   real dialogs, assert the result panel. Keep it to a handful of smoke paths — the
-   protocol/CLI lanes above give better coverage per maintenance euro.
+   lane: launch `SimpleAfirma`, load a PDF, sign with the P12 fixture, assert the result
+   panel. Keep it to a handful of smoke paths — AssertJ-Swing is effectively unmaintained
+   (last release 2020), so treat this lane as disposable; the protocol/CLI lanes above give
+   better coverage per maintenance euro.
 
 **Acceptance:** a green headless run that starts from an `afirma://sign?...` URI and ends
 with a verified CAdES/XAdES/PAdES signature, on Linux CI, with no display and no network.
@@ -264,23 +264,154 @@ with a verified CAdES/XAdES/PAdES signature, on Linux CI, with no display and no
 
 ---
 
-## 4. Sequencing and effort
+## 4. Per-phase assessment: goal, complexity, feasibility, risk
 
-| Phase | Depends on | Rough effort | Value |
-|---|---|---|---|
-| 0 — Harness stabilisation | — | 2–4 days | Unblocks everything; `mvn test` becomes trustworthy |
-| 1 — CI | 0 | 1–2 days | Every PR gets a verdict; regressions visible |
-| 2 — Test-support module | 0 | 3–5 days | Kills fixture duplication/rot; enables headless fakes |
-| 3 — Unit tests for untested core | 2 | 1–2 weeks, parallelisable | Covers the security-sensitive input surface |
-| 4 — De-flake / resurrect suites | 2 | 1 week | +80 real tests recovered from skip limbo |
-| 5 — Headless integration lane | 2 (and small refactors) | 1–2 weeks | True end-to-end confidence, browser-flow parity |
-| 6 — Gates & reporting | 1 | 1–2 days, then ongoing | Prevents backsliding |
+Complexity scale: **Low** = mechanical, few decisions, mostly config/sweeps ·
+**Medium** = real design decisions or many coordinated small changes ·
+**High** = touches production code, concurrency, or brittle external behaviour.
+
+### Phase 0 — Harness stabilisation
+
+* **Goal:** a reproducible, green, offline `mvn test` for the full 37-module reactor, with
+  every environment-dependent test carrying a machine-readable category instead of a comment.
+* **Complexity: Medium.** The Surefire/JUnit config itself is Low, but the sweep touches
+  ~76 `@Ignore`d methods, 15 pseudo-tests and 8 poms across many modules; each
+  reclassification needs a 1-minute judgement call (category vs. delete vs. keep-ignored).
+  No production code is touched.
+* **Feasibility: High — verified.** The suite already runs green on JDK 21 except for the
+  two environmental failures identified; categories + `<excludedGroups>` is bog-standard
+  JUnit 4/Surefire machinery; the profile combination needed for the full reactor is
+  confirmed working (`mvn -B -P env-dev,autofirma validate` → 37 modules).
+* **Risk: Low.** Worst case is misclassifying a test into the wrong lane (recoverable, visible
+  in CI). One watch-item: deleting `main()` drivers may remove scripts some maintainer still
+  uses manually — mitigate by converting rather than deleting where there is any doubt, and
+  by keeping the deletions in a dedicated reviewable commit.
+
+### Phase 1 — Continuous integration
+
+* **Goal:** every push/PR gets an automatic build-and-test verdict covering both the core
+  libraries and the actual AutoFirma application, on the JDKs that matter.
+* **Complexity: Low.** Standard GitHub Actions Maven workflow; the only subtlety
+  (profile combination) is already resolved and documented above.
+* **Feasibility: High, with one unverified assumption.** Everything was validated locally on
+  JDK 21 except the **Temurin 8 job**: the plugin stack (compiler 3.12.1, Surefire 3.2.5,
+  Maven 3.9) is documented Java-8-compatible, but this repo has not been built on JDK 8 in
+  this exercise. First CI run will tell; if a plugin balks, pinning older-but-compatible
+  plugin versions for that job is a contained fix. Windows/macOS jobs are optional and can
+  land later without blocking.
+* **Risk: Low–Medium.** The JDK 8 job may surface genuine latent breakage (post-Java-8 API
+  leakage enabled by `source`/`target` without `--release`) — that is the job doing its job,
+  but it can delay a green pipeline; budget for fixing whatever it finds. Depends on Phase 0
+  being merged first, otherwise CI is born red and gets ignored.
+
+### Phase 2 — Shared test-support module
+
+* **Goal:** one source of truth for keystores, fixtures and test doubles; unit tests that
+  neither touch real OS preference stores nor depend on production CAs' certificate lifetimes.
+* **Complexity: Medium.** New module + reactor wiring is easy; the real work is
+  `FakeAOUIManager` (a 39-method interface, though most methods can throw
+  `UnsupportedOperationException` until needed) and the programmatic certificate factory.
+  The in-memory `PreferencesFactory` and HTTP stub are small, well-trodden patterns.
+* **Feasibility: High.** All techniques are standard and Java-8-safe; SpongyCastle (already a
+  dependency) fully supports certificate generation; the `AOUIFactory.setUIManager` seam
+  exists today in production code — no refactoring needed to exploit it.
+* **Risk: Medium.** Swapping harvested production certificates for generated ones changes
+  what some validation tests actually assert — each swap needs a per-test review of intent
+  (is the test about "a valid cert" or about *that* CA's chain?). Mitigate by migrating
+  fixture-by-fixture with the existing tests as the safety net, and keeping the originals
+  until their consumers are migrated. Deduplicating 260 fixture files is churny; do it
+  module-by-module, not big-bang.
+
+### Phase 3 — Unit tests for untested core logic
+
+* **Goal:** meaningful coverage of the app's highest-risk pure logic — above all the
+  `afirma://` protocol parser, the browser-controlled input surface (3,260 lines, 0 tests).
+* **Complexity: Medium.** No infrastructure work left by this point (Phases 0/2 provide it);
+  the effort is writing good table-driven cases and understanding intended semantics of
+  under-documented parameters. Volume is the cost: seven target areas, parallelisable
+  per-module by different contributors.
+* **Feasibility: High — the targets were chosen for it.** All seven are pure logic verified
+  to have no Swing/network/static-OS coupling (the `PreferencesManager` target needs only
+  the Phase 2 in-memory backend). Realistic corpus inputs already exist in the repo.
+* **Risk: Low–Medium.** Main hazard: tests may *reveal* real bugs or ambiguous behaviour in
+  the parser (that is value, but each finding needs a fix-or-document decision, which can
+  stall the "write tests" flow — triage findings into issues rather than blocking).
+  Secondary hazard: writing characterisation tests that enshrine accidental behaviour;
+  mitigate with review focus on "is this asserted because it's *intended*?".
+
+### Phase 4 — De-flake and resurrect disabled suites
+
+* **Goal:** the ~44 skipped tri-phase/batch client tests and the TSA-dependent tests run
+  deterministically against local stubs; the default lane provably opens no network connection.
+* **Complexity: Medium–High.** The HTTP-stubbing of tri-phase clients is Medium (record/replay
+  of a simple HTTP+Base64 protocol, plus making hardcoded URLs injectable in test code).
+  The local RFC 3161 responder is the High corner — non-trivial ASN.1 work even with
+  SpongyCastle; the fallback (canned recorded TSA responses per digest algorithm) is much
+  cheaper and acceptable.
+* **Feasibility: Medium–High.** Client-side protocol is fully visible in this repo, so stubs
+  can be authored from the code itself. Uncertainty: some ignored tests may have decayed
+  beyond their environment dependency (bit-rotted expectations) — expect a tail of tests
+  where resurrection is not worth it and deletion-with-issue is the honest outcome.
+* **Risk: Medium.** Stub drift: a local stub can diverge from the real tri-phase server's
+  behaviour and give false confidence — mitigate by keeping one live smoke test per protocol
+  in the nightly `RequiresNetwork` lane as the canary. Time investment per resurrected test
+  varies wildly; timebox per module and fall back to deletion-with-issue.
+
+### Phase 5 — Headless integration tests of the invocation surface
+
+* **Goal:** true end-to-end confidence for the flows browsers and scripts actually use:
+  `afirma://` URI in → verified CAdES/XAdES/PAdES bytes out, headless, offline, on Linux CI.
+* **Complexity: High.** This is the only phase that must modify production code
+  (`ExitHandler` injection, resettable launcher statics) and deal with concurrency
+  (socket/WebSocket servers, timeouts, ephemeral ports). Each individual change is small,
+  but it is production-touching and needs careful review in a signature application.
+* **Feasibility: Medium–High.** The enabling seams (`AOUIFactory.setUIManager`, P12 keystore
+  forcing via extra params, `CommandLineLauncher` being genuinely headless) all exist and
+  were verified in the codebase; the CLI lane (item 3) is essentially free and should land
+  first as proof of concept. The WebSocket lane is feasible (plain Java-WebSocket client)
+  but will need timeout discipline to avoid becoming the flakiest part of CI. The optional
+  AssertJ-Swing lane is the least feasible piece (unmaintained tooling, last release 2020)
+  — deliberately optional and disposable.
+* **Risk: Medium–High.** (a) Behaviour-preserving refactors in the launcher carry regression
+  risk in the app's most user-visible path — mitigate: land Phase 3/4 tests first so the
+  refactor happens under coverage, keep diffs minimal and mechanical. (b) Server-based tests
+  are the classic source of CI flakiness (port clashes, timing) — mitigate with ephemeral
+  ports, generous deadlines, and quarantining flaky tests to nightly until proven stable.
+  (c) Static state in `ProtocolInvocationLauncher` means test isolation bugs can produce
+  order-dependent results — the resettable-state refactor is the fix, not an option.
+
+### Phase 6 — Quality gates and reporting
+
+* **Goal:** coverage measured and ratcheted per module; fixture expiry caught 90 days early;
+  the whole testing setup documented in `TESTING.md`.
+* **Complexity: Low.** JaCoCo + a ratchet check and a canary test are configuration and a
+  small amount of glue.
+* **Feasibility: High.** JaCoCo 0.8.x fully supports Java 8 bytecode and JDK 8–21 runtimes;
+  the `sonar` profile already exists as a mount point. Only dependency: CI (Phase 1) must
+  exist.
+* **Risk: Low.** One policy hazard: a coverage *ratchet* set too aggressively punishes
+  legitimate refactoring and teaches people to game the metric — ratchet on meaningful
+  per-module thresholds with a small tolerance band, never a repo-wide vanity number.
+
+### Summary
+
+| Phase | Goal (one line) | Complexity | Feasibility | Risk | Effort | Depends on |
+|---|---|---|---|---|---|---|
+| 0 Harness | Green, offline, categorised `mvn test` for all 37 modules | Medium | High (verified) | Low | 2–4 days | — |
+| 1 CI | Automatic verdict per PR, core + app, JDK 8/11/17 | Low | High (JDK 8 job unverified) | Low–Med | 1–2 days | 0 |
+| 2 Fixtures | Single fixture source of truth + headless fakes | Medium | High | Medium | 3–5 days | 0 |
+| 3 Unit tests | Cover protocol parser, CLI, batch JSON, prefs, plugins | Medium | High | Low–Med | 1–2 weeks (parallelisable) | 2 |
+| 4 De-flake | 44 skipped tests resurrected against local stubs | Med–High | Med–High | Medium | 1 week | 2 |
+| 5 Headless E2E | `afirma://` → verified signature, offline on CI | High | Med–High | Med–High | 1–2 weeks | 2 (+small refactors) |
+| 6 Gates | Coverage ratchet, expiry canary, TESTING.md | Low | High | Low | 1–2 days | 1 |
 
 Phases 0–1 are a single small PR series and should land first; 2–4 can proceed in parallel
 per module afterwards; 5 is incremental behind the integration lane; 6 turns on as soon as
-CI exists and tightens over time.
+CI exists and tightens over time. The plan front-loads the low-risk/high-certainty work and
+pushes everything that touches production code (Phase 5) behind the safety net the earlier
+phases build.
 
-## 5. Risks and constraints
+## 5. Global constraints
 
 * **Java 8 source/target** caps tooling: Mockito ≤ 4.11, AssertJ 3.x line, JUnit 4 or
   Jupiter (both fine). All recommended tools above respect this.
@@ -289,9 +420,6 @@ CI exists and tightens over time.
 * **OS-coupled code** (`restoreconfig`, Firefox NSS, CAPI, Keychain) can only be honestly
   tested on its OS — hence category-filtered Windows/macOS CI jobs and a manual matrix,
   not pretend-coverage on Linux.
-* **Static state in the app tier** means Phase 5 needs small refactors (`ExitHandler`,
-  resettable launcher state). These are behaviour-preserving and should be reviewed as such,
-  but they do touch production classes.
 * Public-CA fixtures cannot be regenerated at will — replacing them with generated fixtures
   changes what some validation tests assert; each swap needs a per-test review of intent
   (expired-cert behaviour vs. valid-cert behaviour).
