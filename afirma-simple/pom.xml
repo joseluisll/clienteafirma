@@ -22,6 +22,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>afirma-test-support</artifactId>
+		</dependency>
+
 	
 		<!-- Permite usar JPEG mal formados con PDFBox -->
 		<dependency>

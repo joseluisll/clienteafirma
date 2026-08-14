@@ -17,6 +17,11 @@
 	
 	<dependencies>
 		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>afirma-test-support</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>es.gob.afirma.lib</groupId>
 			<artifactId>afirma-lib-jmimemagic</artifactId>
 		</dependency>

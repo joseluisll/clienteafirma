@@ -16,6 +16,16 @@
 	</parent>
 	
 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>afirma-test-support</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>es.gob.afirma</groupId>

@@ -15,6 +15,11 @@
 	<description>Plugin para la generacion y validacion de huellas digitales.</description>
 
 	<dependencies>
+		<dependency>
+			<groupId>es.gob.afirma</groupId>
+			<artifactId>afirma-test-support</artifactId>
+		</dependency>
+
 
 		<dependency>
 			<groupId>es.gob.afirma</groupId>

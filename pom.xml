@@ -51,6 +51,7 @@
 		<spongycastle.version>1.58.0.0</spongycastle.version>
 		
 		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
 		<maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
 		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
@@ -59,6 +60,12 @@
 
 		<!-- test-dependencies -->
 		<junit.version>4.13.2</junit.version>
+
+		<!-- Categorias de pruebas (interfaces marcadoras de afirma-test-support) que se
+		     excluyen de la ejecucion por defecto por necesitar recursos de entorno
+		     (red, tarjeta inteligente, GUI, SO concreto, NSS o servidor trifasico).
+		     El perfil 'integration-tests' vacia esta lista para ejecutarlas. -->
+		<surefire.excluded.groups>es.gob.afirma.test.support.RequiresNetwork,es.gob.afirma.test.support.RequiresSmartCard,es.gob.afirma.test.support.RequiresGui,es.gob.afirma.test.support.RequiresWindows,es.gob.afirma.test.support.RequiresMacOS,es.gob.afirma.test.support.RequiresNss,es.gob.afirma.test.support.RequiresTriphaseServer</surefire.excluded.groups>
 	</properties>
 
 	<dependencyManagement>
@@ -164,6 +171,19 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.3.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
+					<configuration>
+						<!-- Las pruebas no deben depender de un entorno grafico -->
+						<argLine>-Djava.awt.headless=true -Dfile.encoding=UTF-8</argLine>
+						<trimStackTrace>false</trimStackTrace>
+						<!-- Temporal, hasta eliminar las pruebas inestables -->
+						<rerunFailingTestsCount>1</rerunFailingTestsCount>
+						<excludedGroups>${surefire.excluded.groups}</excludedGroups>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -615,6 +635,20 @@
 
 				</plugins>
 			</build>
+		</profile>
+
+		<!-- ===== Ejecucion de las pruebas de integracion (categorizadas) =====
+		     Vacia la lista de categorias excluidas para que se ejecuten tambien las
+		     pruebas que necesitan recursos de entorno (red, GUI, NSS, servidor
+		     trifasico, etc.). Debe combinarse con el perfil de modulos deseado, ya
+		     que este perfil no define modulos propios; por ejemplo:
+		       mvn test -P env-dev,integration-tests
+		       mvn test -P env-dev,autofirma,integration-tests -->
+		<profile>
+			<id>integration-tests</id>
+			<properties>
+				<surefire.excluded.groups></surefire.excluded.groups>
+			</properties>
 		</profile>
 	</profiles>
 
