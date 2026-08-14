@@ -10,7 +10,6 @@ import java.security.Security;
 import java.security.Signature;
 import java.util.Enumeration;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.Base64;
@@ -18,9 +17,12 @@ import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.keystores.callbacks.CachePasswordCallback;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresSmartCard;
 
 /** Prueba simple de firma con PKCS#11.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
+@Category(RequiresSmartCard.class)
 public final class TestPkcs11 {
 
 	//private static final String LIB_NAME = "C:\\WINDOWS\\System32\\DNIe_P11_priv.dll"; //$NON-NLS-1$
@@ -42,7 +44,6 @@ public final class TestPkcs11 {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore //Dependiente del PKCS#11
 	public void testPkcs11Dnie() throws Exception {
 		final AOKeyStoreManager ksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
     		AOKeyStore.PKCS11,
@@ -68,7 +69,6 @@ public final class TestPkcs11 {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore //Dependiente del PKCS#11
 	public void testPkcs11Fnmt() throws Exception {
 		final AOKeyStoreManager ksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
     		AOKeyStore.PKCS11,
@@ -94,7 +94,6 @@ public final class TestPkcs11 {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Dependiente del PKCS#11
 	public void testRawPkcs11() throws Exception {
 
         final Constructor<?> sunPKCS11Contructor = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class); //$NON-NLS-1$

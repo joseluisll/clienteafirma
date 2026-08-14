@@ -20,7 +20,6 @@ import java.util.Properties;
 
 import javax.xml.crypto.dsig.DigestMethod;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
@@ -29,8 +28,11 @@ import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.core.signers.AOSigner;
 import es.gob.afirma.core.signers.CounterSignTarget;
 import es.gob.afirma.signers.xadestri.client.asic.AOXAdESASiCSTriPhaseSigner;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresTriphaseServer;
 
 /** Pruebas XAdES trif&aacute;sico. */
+@Category(RequiresTriphaseServer.class)
 public class TestAOXAdESTriPhaseSigner {
 
 	private static final String CERT_PATH = "PFActivoFirSHA1.pfx"; //$NON-NLS-1$
@@ -104,7 +106,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un servidor trifasico
 	public void pruebaFirmaXAdESASiCS() throws Exception {
 
 		final byte[] data = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(DATA_FILENAME));
@@ -134,7 +135,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaFirmaXAdESDetached() throws Exception {
 
 		final byte[] data = AOUtil.getDataFromInputStream(
@@ -175,7 +175,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaCofirmaXAdESDetached() throws Exception {
 		final byte[] signature;
 		try (
@@ -218,7 +217,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaXAdESDetached() throws Exception {
 
 		final byte[] signature;
@@ -259,7 +257,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaDeCofirmaXAdESDetached() throws Exception {
 
 		final byte[] signature;
@@ -296,7 +293,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaCofirmadeContrafirmaXAdESDetached() throws Exception {
 
 		final byte[] signature;
@@ -340,7 +336,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaDeContrafirmaXAdESDetached() throws Exception {
 
 		final byte[] signature;
@@ -377,7 +372,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaFirmaXAdESEnveloping() throws Exception {
 
 		final byte[] data = AOUtil.getDataFromInputStream(
@@ -418,7 +412,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaCofirmaXAdESEnveloping() throws Exception {
 
 		final byte[] signature;
@@ -462,7 +455,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaXAdESEnveloping() throws Exception {
 
 		final byte[] signature;
@@ -499,7 +491,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaXAdESDetachedXL() throws Exception {
 
 		final byte[] signature;
@@ -536,7 +527,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaDeCofirmaXAdESEnveloping() throws Exception {
 
 		final byte[] signature;
@@ -632,7 +622,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaCofirmadeContrafirmaXAdESEnveloping() throws Exception {
 
 		final byte[] signature;
@@ -676,7 +665,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaDeContrafirmaXAdESEnveloping() throws Exception {
 
 		final byte[] signature;
@@ -713,7 +701,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaFirmaXAdESEnveloped() throws Exception {
 
 		final byte[] data = AOUtil.getDataFromInputStream(
@@ -754,7 +741,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaCofirmaXAdESEnveloped() throws Exception {
 
 		final byte[] signature;
@@ -798,7 +784,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaXAdESEnveloped() throws Exception {
 
 		final byte[] signature;
@@ -835,7 +820,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaDeCofirmaXAdESEnveloped() throws Exception {
 
 		final byte[] signature;
@@ -872,7 +856,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaCofirmadeContrafirmaXAdESEnveloped() throws Exception {
 
 		final byte[] signature;
@@ -916,7 +899,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void pruebaContrafirmaDeContrafirmaXAdESEnveloped() throws Exception {
 
 		final byte[] signature;
@@ -953,7 +935,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un servidor trifasico
 	public void pruebaFirmaXAdES() throws Exception {
 
 		final byte[] data = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(DATA_FILENAME));
@@ -985,7 +966,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un servidor trifasico
 	public void pruebaFirmaXAdES_ECDSA() throws Exception {
 
 		System.out.println("Java version: " + System.getProperty("java.version"));
@@ -1024,7 +1004,6 @@ public class TestAOXAdESTriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un servidor trifasico
 	public void pruebaCofirmaXAdESManifest() throws Exception {
 
 		final byte[] sign = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(SIGNATURE_FILENAME));

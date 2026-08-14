@@ -44,6 +44,8 @@ import es.gob.afirma.core.signers.CounterSignTarget;
 import es.gob.afirma.core.util.tree.AOTreeModel;
 import es.gob.afirma.core.util.tree.AOTreeNode;
 import es.gob.afirma.signers.xml.Utils;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNetwork;
 
 /** Pruebas del m&oacute;dulo XAdES de Afirma.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -780,6 +782,7 @@ public final class TestXAdES {
      */
     @SuppressWarnings("static-method")
 	@Test
+	@Category(RequiresNetwork.class)
 	public void testSignExternallyDetached() throws Exception {
 
     	System.out.println("Prueba con JAVA: " + System.getProperty("java.vendor") + " " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

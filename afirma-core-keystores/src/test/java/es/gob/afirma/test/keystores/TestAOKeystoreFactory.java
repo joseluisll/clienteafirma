@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import javax.security.auth.callback.PasswordCallback;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
@@ -29,6 +28,8 @@ import es.gob.afirma.core.misc.Platform;
 import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresWindows;
 
 /**
  * Pruebas de AOKeyStoreFactory
@@ -47,7 +48,7 @@ public class TestAOKeystoreFactory {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore // Solo para Windows
+    @Category(RequiresWindows.class)
     public void testAOKeystoreFactoryCAPI() throws Exception {
     	Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
     	final AOKeyStoreManager ksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
@@ -79,7 +80,6 @@ public class TestAOKeystoreFactory {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore
     public void testAOKeystoreFactory() throws Exception {
         Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
         AOKeyStoreManager ksm;

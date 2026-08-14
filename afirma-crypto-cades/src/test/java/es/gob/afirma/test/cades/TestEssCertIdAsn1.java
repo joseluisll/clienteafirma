@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.spongycastle.asn1.ASN1ObjectIdentifier;
 import org.spongycastle.asn1.DERNull;
@@ -27,7 +26,6 @@ public final class TestEssCertIdAsn1 {
 	/** Pruebas de codificaci&oacute;n de ESSCertIDv2.
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
-	@Ignore
 	@Test
 	public void TestEssCertIdAsn1DefaultValue() throws Exception {
 		final ESSCertIDv2 essCertIDv2WithOid = new ESSCertIDv2(

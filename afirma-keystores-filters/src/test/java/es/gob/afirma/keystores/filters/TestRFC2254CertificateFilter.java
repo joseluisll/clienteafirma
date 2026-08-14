@@ -11,6 +11,8 @@ import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.keystores.filters.rfc.RFC2254CertificateFilter;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNss;
 
 /** Pruebas de filtros RFC 2254.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -62,6 +64,7 @@ public final class TestRFC2254CertificateFilter {
 	 * @throws Exception en cualquier error. */
 	@Test
 	@SuppressWarnings("static-method")
+	@Category(RequiresNss.class)
 	public void TestRFC2254CertificateRecursiveFilter() throws Exception {
 		final RFC2254CertificateFilter filter = new RFC2254CertificateFilter(null, "cn=ANF Global Root CA", true);  //$NON-NLS-1$
 

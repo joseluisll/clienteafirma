@@ -22,6 +22,9 @@ import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import es.gob.afirma.test.support.RequiresGui;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.signers.AOSignConstants;
@@ -80,6 +83,7 @@ public final class TestOOXMLVersions {
      * @throws Exception en cualquier error */
     @SuppressWarnings("static-method")
 	@Test
+	@Category(RequiresGui.class) // La firma OOXML consulta la resolucion de pantalla (java.awt.Toolkit)
     public void testSignature() throws Exception {
 
         Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$

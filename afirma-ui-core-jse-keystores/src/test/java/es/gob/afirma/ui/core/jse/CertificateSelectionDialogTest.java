@@ -3,7 +3,6 @@ package es.gob.afirma.ui.core.jse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.keystores.AOKeyStore;
@@ -11,6 +10,8 @@ import es.gob.afirma.keystores.AOKeyStoreDialog;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.keystores.callbacks.CachePasswordCallback;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresGui;
 
 
 /**
@@ -18,6 +19,7 @@ import es.gob.afirma.keystores.callbacks.CachePasswordCallback;
  * Windows 7.
  * @author Carlos Gamuci
  */
+@Category(RequiresGui.class)
 public class CertificateSelectionDialogTest {
 
 
@@ -30,7 +32,6 @@ public class CertificateSelectionDialogTest {
 	 * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void showCertDialogTest() throws Exception {
 
 		final AOKeyStoreManager ksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(

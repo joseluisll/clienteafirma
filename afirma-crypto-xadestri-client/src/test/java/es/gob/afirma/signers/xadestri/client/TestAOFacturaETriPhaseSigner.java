@@ -15,16 +15,18 @@ import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Properties;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.core.signers.AOSigner;
 import es.gob.afirma.core.signers.AOSignerFactory;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresTriphaseServer;
 
 /** Pruebas XAdES FacturaE trif&aacute;sico.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
+@Category(RequiresTriphaseServer.class)
 public class TestAOFacturaETriPhaseSigner {
 
 	private static final String CERT_PATH = "PFActivoFirSHA1.pfx"; //$NON-NLS-1$
@@ -44,7 +46,6 @@ public class TestAOFacturaETriPhaseSigner {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un servidor trifasico
 	public void pruebaFirmaFacturaE() throws Exception {
 
 		final Properties config0 = new Properties();

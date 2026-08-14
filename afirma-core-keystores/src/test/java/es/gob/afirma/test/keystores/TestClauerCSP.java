@@ -4,13 +4,16 @@ import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.Signature;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.Base64;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresSmartCard;
+import es.gob.afirma.test.support.RequiresWindows;
 
 /** Prueba simple de firma con PKCS#11.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
+@Category({ RequiresSmartCard.class, RequiresWindows.class })
 public final class TestClauerCSP {
 
 	private static final String ALIAS = "CLAUER_PERSONA FISICA DE LA PE\u199A DE PROVES"; //$NON-NLS-1$
@@ -19,7 +22,6 @@ public final class TestClauerCSP {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un CLAUER en Windows
 	public void testCapi() throws Exception {
 
 		final KeyStore ks = KeyStore.getInstance("WINDOWS-MY"); //$NON-NLS-1$

@@ -23,15 +23,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.core.signers.AOSigner;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresTriphaseServer;
 
 /** Pruebas del m&oacute;dulo CAdES de Afirma.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
+@Category(RequiresTriphaseServer.class)
 public final class TestCAdES {
 
 	private static final String SERVER_URL = "http://localhost:8080/afirma-server-triphase-signer/SignatureService"; //$NON-NLS-1$
@@ -98,7 +100,6 @@ public final class TestCAdES {
 	 * @throws Exception en cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore("Necesita el servidor")
 	public void testSignature() throws Exception {
 
 		Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
@@ -151,7 +152,6 @@ public final class TestCAdES {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore("Necesita el servidor")
 	public void testCoSignature() throws Exception {
 
 		Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$

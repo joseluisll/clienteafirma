@@ -20,14 +20,16 @@ import java.security.Security;
 import java.util.Date;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.signers.cades.CAdESParameters;
 import es.gob.afirma.signers.cades.GenCAdESEPESSignedData;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresSmartCard;
 
 /** Pruebas espec&iacute;ficas de CAdES para DNIe.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
+@Category(RequiresSmartCard.class)
 public final class MiniTestDNI {
 
     private static final String DNIE_DRIVER_PATH = "name=testdni\r\nlibrary=c:/windows/system32/UsrPkcs11.dll\r\nshowInfo=false"; //$NON-NLS-1$
@@ -41,7 +43,6 @@ public final class MiniTestDNI {
     /** Mini-prueba CAdES especifica para DNIe.
      * @throws Exception en caso de cualquier tipo de problema. */
     @SuppressWarnings({ "static-method" })
-    @Ignore // Necesita un DNIe
 	@Test
     public void testCAdESDNIe() throws Exception {
 

@@ -7,15 +7,17 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.MessageDigest;
 import java.util.Properties;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.core.signers.AOSigner;
 import es.gob.afirma.core.signers.CounterSignTarget;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresTriphaseServer;
 
 /** Pruebas de firmas XAdES con MANIFEST. */
+@Category(RequiresTriphaseServer.class)
 public final class TestXAdESTriWithManifest {
 
 	private static final String CERT_PATH = "EIDAS_CERTIFICADO_PRUEBAS___99999999R.p12"; //$NON-NLS-1$
@@ -30,7 +32,6 @@ public final class TestXAdESTriWithManifest {
 	 * @throws Exception en cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testXadesEnvelopingUseManifestBinary() throws Exception {
 
 		System.out.println("Firma XAdES Trifasica Enveloping con Manifest de datos binarios"); //$NON-NLS-1$
@@ -66,7 +67,6 @@ public final class TestXAdESTriWithManifest {
 	 * @throws Exception en cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testXadesEnvelopingUseManifestXML() throws Exception {
 
 		System.out.println("Firma XAdES Enveloping con Manifest de XML"); //$NON-NLS-1$
@@ -102,7 +102,6 @@ public final class TestXAdESTriWithManifest {
 	 * @throws Exception en cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testXadesEnvelopedUseManifest() throws Exception {
 
 		System.out.println("Firma XAdES Enveloped con Manifest"); //$NON-NLS-1$
@@ -139,7 +138,6 @@ public final class TestXAdESTriWithManifest {
 	 * @throws Exception en cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testCoSignXadesWithManifest() throws Exception {
 
 		System.out.println("Cofirma de firma XAdES con Manifest"); //$NON-NLS-1$
@@ -172,7 +170,6 @@ public final class TestXAdESTriWithManifest {
 	 * @throws Exception en cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testCounterSignXadesWithManifest() throws Exception {
 
 		System.out.println("Contrafirma de firma XAdES con Manifest"); //$NON-NLS-1$

@@ -6,11 +6,13 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.security.MessageDigest;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNetwork;
 
 /** Pruebas de sellos de tiempo.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
+@Category(RequiresNetwork.class)
 public class TestTsp {
 
 	private static final String CATCERT_POLICY = "0.4.0.2023.1.1"; //$NON-NLS-1$
@@ -21,7 +23,6 @@ public class TestTsp {
 	 * @throws Exception En cualquier error */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void TestRfc3161TokenHttp() throws Exception {
 
 		final CMSTimestamper cmsTsp = new CMSTimestamper(

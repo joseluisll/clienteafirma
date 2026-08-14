@@ -8,7 +8,6 @@ import java.io.Reader;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
@@ -16,6 +15,8 @@ import es.gob.afirma.core.misc.BoundedBufferedReader;
 import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.mozilla.AOSecMod.ModuleName;
 import es.gob.afirma.keystores.mozilla.shared.SharedNssKeyStoreManager;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNss;
 
 /** Pruebas de la configuraci&oacute;n especial de NSS compartido.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -158,7 +159,7 @@ public final class TestNssSharedDb {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Category(RequiresNss.class)
 	public void testLoadSystemSharedNSS() {
 
 		final SharedNssKeyStoreManager ksm = new SharedNssKeyStoreManager();

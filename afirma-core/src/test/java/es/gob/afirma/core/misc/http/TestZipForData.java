@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.Base64;
@@ -23,7 +22,6 @@ public final class TestZipForData {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testSizes() throws Exception {
 		System.out.println("Tamano de los datos en Base64: " + SAMPLE_DATA.length()); //$NON-NLS-1$
 		final byte[] origBytes = Base64.decode(SAMPLE_DATA, true);
@@ -40,7 +38,6 @@ public final class TestZipForData {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testDownloadData() throws Exception {
 		final byte[] origBytes = Base64.decode(SAMPLE_DATA, true);
 		final byte[] compressedBytes = gzipBytes(origBytes);
@@ -55,7 +52,6 @@ public final class TestZipForData {
 	 * de un mapa de cadenas. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testParamParse() {
 		final Map<String, String> noParam = new HashMap<>(0);
 		final Map<String, String> noGzip = new HashMap<>(1);

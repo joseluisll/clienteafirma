@@ -6,7 +6,6 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Properties;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.signers.AOSignConstants;
@@ -15,9 +14,12 @@ import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.signers.xades.AOXAdESSigner;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresSmartCard;
 
 /** Clase de prueba de firma con JMulticard a trav&eacute;s del almac&eacute;n de Firefox. Se incluye
  * en este proyecto por disponer de todas las bibliotecas necesarias. */
+@Category(RequiresSmartCard.class)
 public final class TestJMulticardSignature {
 
 	/** Realiza una firma XAdES con el certificado del DNIe a trav&eacute;s del
@@ -25,7 +27,6 @@ public final class TestJMulticardSignature {
 	 * @throws Exception Cuando ocurre cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita DNIe
 	public void testFirmaXAdESJMulticardSignature() throws Exception {
 
 		final AOKeyStore ks = AOKeyStore.MOZ_UNI;

@@ -4,15 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.Platform;
 import es.gob.afirma.core.ui.AOUIFactory;
 import es.gob.afirma.core.ui.GenericFileFilter;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresGui;
 
 /** Pruebas de di&aacute;logos sin JUnit.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
+@Category(RequiresGui.class)
 public final class FileDialogsTest {
 
 	/**
@@ -21,7 +23,6 @@ public final class FileDialogsTest {
 	 */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void showSelectMultiFileTest() throws IOException {
 		for (final File f : AOUIFactory.getLoadFiles(
 			"Seleccion multiple de ficheros", //$NON-NLS-1$

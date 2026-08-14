@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.AOException;
@@ -20,9 +19,12 @@ import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.signers.AOSigner;
 import es.gob.afirma.core.signers.CounterSignTarget;
 import es.gob.afirma.signers.cadestri.client.asic.AOCAdESASiCSTriPhaseSigner;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresTriphaseServer;
 
 /** Pruebas de firma CAdES trif&aacute;sica.
  * @author Tom&acute;s Garc&iacute;a-Mer&aacute;s */
+@Category(RequiresTriphaseServer.class)
 public final class TestCadesTriphase {
 
 	/** Nombre de la propiedad de URL del servidor de firma trif&aacute;sica. */
@@ -52,7 +54,6 @@ public final class TestCadesTriphase {
 	 * @throws AOException Cuando falla la firma.
 	 * @throws IOException Cuando ocurre un error al cargar o guardar datos. */
 	@Test
-	@Ignore("Necesita el servidor")
 	public void testTriPhaseSignCAdESASiCS() throws AOException, IOException {
 		final AOSigner signer = new AOCAdESASiCSTriPhaseSigner();
 
@@ -83,7 +84,6 @@ public final class TestCadesTriphase {
 	/** Prueba de firma CAdES trif&aacute;sica.
 	 * @throws Exception en cualquier error. */
 	@Test
-	@Ignore("Necesita el servidor")
 	public void testTriPhaseSignCAdES() throws Exception {
 		final AOSigner signer = new AOCAdESTriPhaseSigner();
 
@@ -115,7 +115,6 @@ public final class TestCadesTriphase {
 	/** Prueba de cofirma CAdES trif&aacute;sica.
 	 * @throws Exception en cualquier error. */
 	@Test
-	@Ignore // Necesita el servidor
 	public void cofirma() throws Exception {
 		final AOSigner signer = new AOCAdESTriPhaseSigner();
 
@@ -152,7 +151,6 @@ public final class TestCadesTriphase {
 	/** Prueba de contrafirma CAdES trif&aacute;sica.
 	 * @throws Exception en cualquier error. */
 	@Test
-	@Ignore // Necesita el servidor
 	public void contrafirma() throws Exception {
 		final AOSigner signer = new AOCAdESTriPhaseSigner();
 

@@ -7,14 +7,16 @@ import java.io.OutputStream;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.signers.pades.PdfTimestamper;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNetwork;
 
 /** Pruebas de sellos de tiempo de forma independiente a las firmas.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
+@Category(RequiresNetwork.class)
 public final class TestStandaloneTimestamp {
 
 	private static final String CATCERT_POLICY = "0.4.0.2023.1.1"; //$NON-NLS-1$
@@ -34,7 +36,6 @@ public final class TestStandaloneTimestamp {
      * @throws Exception en cualquier error. */
     @SuppressWarnings("static-method")
     @Test
-    @Ignore
 	public void testTimestampCosignedPdf() throws Exception {
     	final byte[] inPdf;
     	try (
@@ -63,7 +64,6 @@ public final class TestStandaloneTimestamp {
      * @throws Exception en cualquier error. */
     @SuppressWarnings("static-method")
     @Test
-    @Ignore
 	public void testTimestampPdf() throws Exception {
     	final byte[] inPdf;
     	try (

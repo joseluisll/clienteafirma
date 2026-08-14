@@ -1,12 +1,15 @@
 package es.gob.afirma.test.simple;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.core.misc.http.UrlHttpManagerFactory;
 import es.gob.afirma.core.misc.http.UrlHttpMethod;
 import es.gob.afirma.standalone.SimpleAfirma;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresGui;
+import es.gob.afirma.test.support.RequiresNetwork;
+import es.gob.afirma.test.support.RequiresNss;
 
 /** Pruebas de invocaci&oacute;n por protocolo.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -24,7 +27,7 @@ public class TestProtocolInvocation {
 	/** Prueba de protocolo sin indicar datos. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita UI
+	@Category(RequiresGui.class)
 	public void testWithoutData() {
 		SimpleAfirma.main(new String[] { LINE_NODATA });
 	}
@@ -32,7 +35,7 @@ public class TestProtocolInvocation {
 	/** Prueba de protocolo con almac&eacute;n de claves establecido manualmente. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita NSS
+	@Category(RequiresNss.class)
 	public void testCustomStore() {
 		SimpleAfirma.main(new String[] { LINE_CUSTOM_STORE });
 	}
@@ -40,7 +43,7 @@ public class TestProtocolInvocation {
 	/** Prueba de protocolo con firma de hash. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Requiere de servidor remoto y UI
+	@Category({ RequiresGui.class, RequiresNetwork.class })
 	public void testSignHash() {
 		SimpleAfirma.main(new String[] { LINE_SIGN_HASH });
 	}
@@ -48,7 +51,7 @@ public class TestProtocolInvocation {
 	/** Prueba de protocolo con firma visible de PDF. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Requiere de servidor remoto y UI
+	@Category({ RequiresGui.class, RequiresNetwork.class })
 	public void testSignPdfWithVisibleText() {
 		SimpleAfirma.main(new String[] { LINE_SIGN_PDF });
 	}
@@ -57,7 +60,7 @@ public class TestProtocolInvocation {
 	 * @throws Exception En cualquier error */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita UI
+	@Category(RequiresGui.class)
 	public void testService() throws Exception {
 		new Thread(
 			() -> SimpleAfirma.main(new String[] { LINE_SERVICE })

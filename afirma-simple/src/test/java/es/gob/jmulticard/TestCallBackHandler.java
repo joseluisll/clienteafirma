@@ -7,21 +7,22 @@ import java.security.Security;
 import java.security.Signature;
 import java.util.Enumeration;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.keystores.jmulticard.ui.CommonPasswordCallback;
 import es.gob.afirma.keystores.jmulticard.ui.DnieCacheCallbackHandler;
 import es.gob.jmulticard.jse.provider.DnieProvider;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresSmartCard;
 
 /** Pruebas de tarjetas inteligentes con <i>CallbackHandler</i>. */
+@Category(RequiresSmartCard.class)
 public class TestCallBackHandler {
 
 	/** Prueba de <i>CallbackHandlerProtection</i>.
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testProviderWithCallbackHandlerProtection() throws Exception {
 		final Provider p = new DnieProvider();
 		Security.addProvider(p);
@@ -45,7 +46,6 @@ public class TestCallBackHandler {
 	/** Prueba de <i>PasswordProtection</i>.
 	 * @throws Exception En cualquier error. */
 	@Test
-	@Ignore
 	@SuppressWarnings("static-method")
 	public void testProviderWithPasswordProtection() throws Exception {
 		final Provider p = new DnieProvider();
@@ -69,7 +69,6 @@ public class TestCallBackHandler {
 	/** Prueba de <i>KeyStoreBuilder</i> con <i>CallbackHandlerProtection</i>.
 	 * @throws Exception En cualquier error. */
 	@Test
-	@Ignore
 	@SuppressWarnings("static-method")
 	public void testProviderWithKeyStoreBuilderWithCallbackHandlerProtection() throws Exception {
 		final KeyStore.Builder kb = KeyStore.Builder.newInstance(
@@ -93,7 +92,6 @@ public class TestCallBackHandler {
 	/** Prueba de <i>KeyStoreBuilder</i> con <i>PasswordProtection</i>.
 	 * @throws Exception En cualquier error. */
 	@Test
-	@Ignore
 	@SuppressWarnings("static-method")
 	public void testProviderWithKeyStoreBuilderWithPasswordProtection() throws Exception {
 		final KeyStore.Builder kb = KeyStore.Builder.newInstance(

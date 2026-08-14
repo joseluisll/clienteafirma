@@ -3,7 +3,6 @@ package es.gob.afirma.triphase.signer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** Pruebas varias.
@@ -15,7 +14,6 @@ public final class TestMisc {
 	/** Prueba de limpieza de delimitadores de nodos. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testNodeClean() {
 
 		final String cleanValue = "<ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\" Id=\"Signature-763862fd-6530-40d4-a5f8-d12726489625-KeyInfo\">"; //$NON-NLS-1$

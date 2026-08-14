@@ -50,7 +50,7 @@ public final class TestListSignatureFields {
 
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Ignore // El PDF de prueba con campos de firma no esta en el repositorio
 	public void testAnalizeSignatureFields() throws Exception {
 		PdfReader reader;
 		try (InputStream fis = new FileInputStream("C:\\Users\\carlos.gamuci\\Desktop\\test\\descargar_signed_campo.pdf")) { //$NON-NLS-1$

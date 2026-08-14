@@ -10,12 +10,13 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.standalone.ui.pdf.PdfLoader.PdfLoaderListener;
 import es.gob.afirma.standalone.ui.pdf.SignPdfUiPanel.SignPdfUiPanelListener;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresGui;
 
 /** Pruebas del UI de firma PDF visible.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -41,7 +42,7 @@ public final class UiTester {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings({ "static-method" })
 	@Test
-	@Ignore // Requiere interfaz grafica
+	@Category(RequiresGui.class)
 	public void testDialog() throws Exception {
 		final byte[] testPdf = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(TEST_FILE));
 		SignPdfDialog.getVisibleSignatureExtraParams(
@@ -60,7 +61,7 @@ public final class UiTester {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Requiere interfaz grafica
+	@Category(RequiresGui.class)
 	public void testMainPanel() throws Exception {
 
 		final byte[] testPdf = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(TEST_FILE));

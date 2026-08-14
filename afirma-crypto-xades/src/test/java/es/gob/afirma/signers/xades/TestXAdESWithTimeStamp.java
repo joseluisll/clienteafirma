@@ -7,14 +7,16 @@ import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.util.Properties;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.signers.AOSignConstants;
 import es.gob.afirma.signers.tsp.pkcs7.TsaParams;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNetwork;
 
 /** Pruebas de XAdES con sellos de tiempo. */
+@Category(RequiresNetwork.class)
 public final class TestXAdESWithTimeStamp {
 
     private static final String CERT_PATH = "EIDAS_CERTIFICADO_PRUEBAS___99999999R__1234.p12"; //$NON-NLS-1$
@@ -37,7 +39,6 @@ public final class TestXAdESWithTimeStamp {
     /** Pruebas de XAdES-T.
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
-	@Ignore
 	@Test
     public void testXAdEST() throws Exception {
 
@@ -78,7 +79,6 @@ public final class TestXAdESWithTimeStamp {
     /** Pruebas de XAdES-T-Level.
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
-	@Ignore
 	@Test
     public void testXAdESTLevel() throws Exception {
 

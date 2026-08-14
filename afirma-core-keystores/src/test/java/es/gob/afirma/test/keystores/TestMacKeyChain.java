@@ -26,6 +26,8 @@ import es.gob.afirma.core.misc.Platform;
 import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresMacOS;
 
 /** Pruebas espec&iacute;ficas para los almacenes de Mac OS X.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
@@ -35,7 +37,7 @@ public class TestMacKeyChain {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore // Requieren contrasena del almacen
+    @Category(RequiresMacOS.class)
     public void testStandaloneKeyChain() throws Exception {
         if (!Platform.OS.MACOSX.equals(Platform.getOS())) {
             return;

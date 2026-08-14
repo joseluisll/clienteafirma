@@ -1,13 +1,15 @@
 package es.gob.afirma.test.simple;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.standalone.SimpleAfirma;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresGui;
 
 /** Pruebas de invocaci&oacute;n por protocolo para lotes de firma.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
+@Category(RequiresGui.class)
 public class TestProtocolInvocationBatch {
 
 	private static final String SAMPLE_BATCH_XML =
@@ -47,7 +49,6 @@ public class TestProtocolInvocationBatch {
 	/** Prueba de firma por lotes. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita UI
 	public void testWithoutData() {
 		SimpleAfirma.main(new String[] { LINE });
 	}

@@ -6,10 +6,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNetwork;
+import es.gob.afirma.test.support.RequiresWindows;
 
 /** Prueba de descarga de datos.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -48,7 +50,7 @@ public final class TestDataDownloader {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Category(RequiresNetwork.class)
 	public void doDirectPost() throws Exception {
 		final URL u = new URL(TEST_POST_URL);
 		final HttpURLConnection conn = (HttpURLConnection) u.openConnection();
@@ -83,7 +85,7 @@ public final class TestDataDownloader {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Category(RequiresWindows.class)
 	public void testDataDownloaderFile() throws Exception {
 		final byte[] data = DataDownloader.downloadData(
 			"file://c:/Windows/WindowsUpdate.log" //$NON-NLS-1$
@@ -95,7 +97,7 @@ public final class TestDataDownloader {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Category(RequiresNetwork.class)
 	public void testDataDownloaderInvalidUrl() throws Exception {
 		final byte[] data = UrlHttpManagerFactory.getInstalledManager().readUrl(
 			"http://dasdasdasd.asd?kaka=caca", //$NON-NLS-1$
@@ -108,7 +110,7 @@ public final class TestDataDownloader {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Category(RequiresNetwork.class)
 	public void testPost() throws Exception {
 		final byte[] data = UrlHttpManagerFactory.getInstalledManager().readUrl(
 			TEST_POST,
@@ -124,7 +126,7 @@ public final class TestDataDownloader {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Category(RequiresNetwork.class)
 	public void testGet() throws Exception {
 		final byte[] data = UrlHttpManagerFactory.getInstalledManager().readUrl(
 			TEST_GET,

@@ -13,7 +13,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.AOException;
@@ -21,7 +20,10 @@ import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.misc.Base64;
 import es.gob.afirma.core.misc.http.SslSecurityManager;
 import es.gob.afirma.signers.batch.client.BatchSigner;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresTriphaseServer;
 
+@Category(RequiresTriphaseServer.class)
 public class TestBatchJson {
 
 	private static final String CERT_PATH = "00_colegiado-hsm_revoked.p12"; //$NON-NLS-1$
@@ -46,7 +48,6 @@ public class TestBatchJson {
 
 
 	@Test
-	@Ignore
 	public void testBatch() throws CertificateEncodingException, IOException, AOException {
 
 		final String batchPreSignerUrl = BASE_URL + "presign"; //$NON-NLS-1$
@@ -62,7 +63,6 @@ public class TestBatchJson {
 	}
 
 	@Test
-	@Ignore
 	public void testBatchWithCounterSigns() throws CertificateEncodingException, IOException, AOException, GeneralSecurityException {
 
 		final String batchPreSignerUrl = BASE_URL + "presign"; //$NON-NLS-1$

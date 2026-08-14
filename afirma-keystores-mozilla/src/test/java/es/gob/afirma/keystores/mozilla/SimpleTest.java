@@ -10,7 +10,6 @@ import java.security.Signature;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.AOException;
@@ -20,8 +19,11 @@ import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.keystores.KeyStoreUtilities;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresNss;
 
 /** Pruebas simples de almacenes Mozilla NSS. */
+@Category(RequiresNss.class)
 public final class SimpleTest {
 
     /** Inicio de las pruebas desde consola sin JUnit.
@@ -37,7 +39,6 @@ public final class SimpleTest {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
     @Test
-    @Ignore // Necesita NSS
     public void testKeyStoreManagerCreation() throws Exception {
 
     	System.setProperty(
@@ -97,7 +98,6 @@ public final class SimpleTest {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
     @Test
-    @Ignore // Necesita NSS
     public void testSystemKeyStoreManagerCreation() throws Exception {
     	final AOKeyStoreManager ksm = AOKeyStoreManagerFactory.getAOKeyStoreManager(
     	    AOKeyStore.SHARED_NSS, // Store
@@ -124,7 +124,6 @@ public final class SimpleTest {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore
     public void testDirectNssUsage() throws Exception {
     	final KeyStore keyStore = KeyStore.getInstance(
 			"PKCS11", //$NON-NLS-1$

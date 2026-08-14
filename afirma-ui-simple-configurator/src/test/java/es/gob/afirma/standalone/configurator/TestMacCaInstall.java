@@ -11,16 +11,18 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.AOCancelledOperationException;
 import es.gob.afirma.core.misc.AOUtil;
 import es.gob.afirma.core.ui.AOUIFactory;
 import es.gob.afirma.keystores.mozilla.apple.ShellScript;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresMacOS;
 
 /** Pruebas de instalaci&oacute;n de certificado ra&iacute;z en OS X.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
+@Category(RequiresMacOS.class)
 public final class TestMacCaInstall {
 
 	private static final String KEYCHAIN_PATH = "/Library/Keychains/System.keychain"; //$NON-NLS-1$
@@ -31,7 +33,6 @@ public final class TestMacCaInstall {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita macOS. Este modo de uso deja de funciona con macOS Big Sur
 	public void testInstallRootCAWithScript() throws Exception {
 
 		final File f = new File(TestMacCaInstall.class.getResource("/Autofirma_ROOT.cer").toURI()); //$NON-NLS-1$
@@ -66,7 +67,6 @@ public final class TestMacCaInstall {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testInstallRootCaWithProcess() throws Exception {
 
 		final File f = new File(TestMacCaInstall.class.getResource("/Autofirma_ROOT.cer").toURI()); //$NON-NLS-1$
@@ -139,7 +139,6 @@ public final class TestMacCaInstall {
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void testInstallSslCertWithProcess() throws Exception {
 
 		final File f = new File(TestMacCaInstall.class.getResource("/127_0_0_1.cer").toURI()); //$NON-NLS-1$

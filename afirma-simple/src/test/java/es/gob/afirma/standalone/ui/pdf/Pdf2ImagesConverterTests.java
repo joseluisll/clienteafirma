@@ -55,7 +55,7 @@ public final class Pdf2ImagesConverterTests {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Ignore // Carga asincrona sin espera ni comprobacion del resultado; prueba manual
 	public void testPdfLoad() throws Exception {
 		final byte[] testPdf = AOUtil.getDataFromInputStream(ClassLoader.getSystemResourceAsStream(TEST_FILE));
 		LOGGER.info("Inicio de la carga"); //$NON-NLS-1$

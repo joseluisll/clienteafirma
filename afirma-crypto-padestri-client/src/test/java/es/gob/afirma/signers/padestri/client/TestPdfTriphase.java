@@ -20,7 +20,6 @@ import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.RuntimeConfigNeededException;
@@ -32,6 +31,8 @@ import es.gob.afirma.signers.pades.common.BadPdfPasswordException;
 import es.gob.afirma.signers.pades.common.PdfExtraParams;
 import es.gob.afirma.signers.pades.common.PdfIsCertifiedException;
 import es.gob.afirma.signers.pades.common.PdfIsPasswordProtectedException;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresTriphaseServer;
 
 /** Pruebas de firma trif&aacute;sica. */
 public class TestPdfTriphase {
@@ -112,7 +113,7 @@ public class TestPdfTriphase {
 	/** Prueba de firma trif&aacute;sica normal.
 	 * @throws Exception En cualquier error. */
 	@Test
-	@Ignore
+	@Category(RequiresTriphaseServer.class)
 	public void testFirma() throws Exception {
 		final AOSigner signer = new AOPDFTriPhaseSigner();
 
@@ -140,7 +141,7 @@ public class TestPdfTriphase {
 	/** Prueba de firma trif&aacute;sica de un PDF certificado.
 	 * @throws Exception En cualquier error. */
 	@Test
-	@Ignore
+	@Category(RequiresTriphaseServer.class)
 	public void testFirmaPdfCertificado() throws Exception {
 		final AOSigner signer = new AOPDFTriPhaseSigner();
 
@@ -199,7 +200,7 @@ public class TestPdfTriphase {
 	 * el portafirmas del MinHAP.
 	 * @throws Exception Cuando ocurre cualquier error. */
 	@Test
-	@Ignore
+	@Category(RequiresTriphaseServer.class)
 	public void testFirmaParamsPortafirmas() throws Exception {
 
 		final AOSigner signer = new AOPDFTriPhaseSigner();
@@ -232,7 +233,7 @@ public class TestPdfTriphase {
 	/** Prueba de firma trif&aacute;sica con adjunto en el PDF.
 	 * @throws Exception En cualquier error. */
 	@Test
-	@Ignore
+	@Category(RequiresTriphaseServer.class)
 	public void firmaConAdjunto() throws Exception {
 		final AOSigner signer = new AOPDFTriPhaseSigner();
 
@@ -280,7 +281,7 @@ public class TestPdfTriphase {
 	/** Prueba de firma trif&aacute;sica normal.
 	 * @throws Exception En cualquier error. */
 	@Test
-	@Ignore
+	@Category(RequiresTriphaseServer.class)
 	public void cofirma() throws Exception {
 		final AOSigner signer = new AOPDFTriPhaseSigner();
 
@@ -334,7 +335,7 @@ public class TestPdfTriphase {
 	 * @throws Exception En cualquier error.
 	 */
 	@Test
-	@Ignore
+	@Category(RequiresTriphaseServer.class)
 	public void firmaConContrasenaSinIndicar() throws Exception {
 		final AOSigner signer = new AOPDFTriPhaseSigner();
 
@@ -367,7 +368,7 @@ public class TestPdfTriphase {
 	 * @throws Exception En cualquier error.
 	 */
 	@Test
-	@Ignore
+	@Category(RequiresTriphaseServer.class)
 	public void firmaConContrasenaErronea() throws Exception {
 		final AOSigner signer = new AOPDFTriPhaseSigner();
 

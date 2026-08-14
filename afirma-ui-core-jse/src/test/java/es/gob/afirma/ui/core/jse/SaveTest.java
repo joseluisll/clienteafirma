@@ -4,14 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.ui.AOUIManager;
 import es.gob.afirma.core.ui.GenericFileFilter;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresGui;
 
 /** Pruebas del di&aacute;logo de guardado.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
+@Category(RequiresGui.class)
 public final class SaveTest {
 
 	/**
@@ -20,7 +22,6 @@ public final class SaveTest {
 	 */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore
 	public void showSaveFileDialogTest() throws IOException {
 		final AOUIManager m = new JSEUIManager();
 		m.saveDataToFile(

@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 import javax.security.auth.callback.PasswordCallback;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.core.misc.AOUtil;
@@ -34,9 +33,12 @@ import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.keystores.KeyStoreUtilities;
 import es.gob.afirma.keystores.KeyStoreUtilities.PasswordCallbackHandler;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresSmartCard;
 
 /** Pruebas espec&iacute;ficas para el almac&eacute;n DNIe.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s */
+@Category(RequiresSmartCard.class)
 public class TestDnie {
 
 	private static final String SIGN_ALIAS = "CertFirmaDigital";  //$NON-NLS-1$
@@ -47,7 +49,6 @@ public class TestDnie {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un DNIe
     public void testDnieJava() throws Exception {
         Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
 
@@ -80,7 +81,6 @@ public class TestDnie {
      * @throws Exception En cualquier error. */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un DNIe
     public void testDnieCapi() throws Exception {
         Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
 
@@ -132,7 +132,6 @@ public class TestDnie {
      */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un DNIe
     public void testDnie64BitsPkcs11() throws Exception {
         Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
 
@@ -167,7 +166,6 @@ public class TestDnie {
      */
     @SuppressWarnings("static-method")
 	@Test
-	@Ignore // Necesita un DNIe
     public void testRawDniePkcs11() throws Exception {
 
         final String p11ProviderName = "Afirma-P11-64"; //$NON-NLS-1$

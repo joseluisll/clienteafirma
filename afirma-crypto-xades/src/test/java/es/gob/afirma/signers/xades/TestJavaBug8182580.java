@@ -24,7 +24,7 @@ public final class TestJavaBug8182580 {
 	 * @throws Exception En cualquier error. */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Ignore // Reproduce el error JDK-8182580: falla en los JDK sin la correccion
 	public void testSignXadesEc() throws Exception {
 		final KeyStore ks = KeyStore.getInstance("PKCS12"); //$NON-NLS-1$
 		ks.load(

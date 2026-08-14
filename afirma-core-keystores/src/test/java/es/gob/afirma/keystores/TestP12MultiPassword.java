@@ -25,7 +25,7 @@ public class TestP12MultiPassword {
 	 * @throws Exception Si ocurre cualquier problema */
 	@SuppressWarnings("static-method")
 	@Test
-	@Ignore
+	@Ignore // El PKCS12KeyStore del JDK no recupera las claves cifradas con contrasena distinta a la del almacen (UnrecoverableKeyException)
 	public void testPkcs12StoreWithMultiplePasswords() throws Exception {
 		Logger.getLogger("es.gob.afirma").setLevel(Level.WARNING); //$NON-NLS-1$
 

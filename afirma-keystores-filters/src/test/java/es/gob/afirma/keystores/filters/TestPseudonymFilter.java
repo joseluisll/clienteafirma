@@ -4,13 +4,14 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import es.gob.afirma.keystores.AOKeyStore;
 import es.gob.afirma.keystores.AOKeyStoreManager;
 import es.gob.afirma.keystores.AOKeyStoreManagerFactory;
 import es.gob.afirma.keystores.callbacks.CachePasswordCallback;
+import org.junit.experimental.categories.Category;
+import es.gob.afirma.test.support.RequiresSmartCard;
 
 /** Pruebas del filtro de certificados por identificador de pol&iacute;tica de certificaci&oacute;n.
  * @author Tom&aacute;s Garc&iacute;a-Mer&aacute;s. */
@@ -31,7 +32,7 @@ public final class TestPseudonymFilter {
 	 * @throws Exception en cualquier error. */
 	@Test
 	@SuppressWarnings("static-method")
-	@Ignore
+	@Category(RequiresSmartCard.class)
 	public void testPolicyIdFilter() throws Exception {
 		final AOKeyStoreManager ksm  = AOKeyStoreManagerFactory.getAOKeyStoreManager(
 			AOKeyStore.DNIEJAVA,
